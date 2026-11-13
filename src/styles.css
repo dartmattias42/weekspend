@@ -153,3 +153,17 @@
     color: var(--color-foreground);
   }
 }
+
+/* weekspend palette (from Figma "Image Palette") */
+@theme inline {
+  --color-ws-bg: #e7e7e7;
+  --color-ws-ink: #070707;
+  --color-ws-orange: #ed8008;
+  --color-ws-olive: #736b1e;
+  --color-ws-red: #bf1b1b;
+  --color-ws-flame: #ed3f1c;
+  --color-ws-gray: #c4c4c4;
+  --color-ws-warm: #d9d2c6;
+  --color-ws-muted: #727272;
+  --font-ws: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+}
