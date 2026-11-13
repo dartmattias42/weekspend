@@ -1,3 +1,3 @@
 # Roadmap
 
-- [ ] Implement Figma design weekspend-app (node 38-6041)
+- [x] Implement Figma design weekspend-app (node 38-6041)
