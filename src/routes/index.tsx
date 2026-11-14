@@ -205,6 +205,7 @@ function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
 /* ---------- calendar (April 2027 starts on Thursday) ---------- */
 function Calendar({ selected, onSelect, tone, min = 1 }: { selected: number; onSelect: (d: number) => void; tone: "olive" | "red"; min?: number }) {
   const cells = useMemo(() => [...Array(3).fill(null), ...Array.from({ length: 30 }, (_, i) => i + 1)], []);
+  const today = new Date().getDate();
   return (
     <div className="w-full px-3">
       <div className="flex items-center justify-between pb-[3px] pl-2 pr-[6px] pt-[13px]">
