@@ -285,7 +285,7 @@ function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: strin
 
         <section className="relative h-[178px] w-full rounded-[20px] bg-ws-gray pt-[6px] text-center">
           <p className="text-[17px] font-semibold leading-7 tracking-[-0.43px]">sek spent of budget</p>
-          <p className="text-[50px] leading-9 text-ws-olive tabular-nums">{fmt(totalSek)}</p>
+          <p className="text-[50px] font-bold leading-9 text-ws-olive tabular-nums">{fmt(totalSek)}</p>
           <p className="text-[17px] font-semibold leading-5 text-ws-bg">. . .</p>
           <p className="text-[17px] font-semibold leading-7 tracking-[-0.43px]">sek spent today</p>
           <p className="text-[39px] font-medium leading-[31px] text-ws-flame tabular-nums">{fmt(todaySek)}</p>
