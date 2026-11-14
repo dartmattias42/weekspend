@@ -252,7 +252,10 @@ function BudgetSection({ budget, setBudget, cost, setCost }: {
           {BUDGET_OPTIONS.map((o) => (
             <button
               key={o}
-              onClick={() => setBudget(o)}
+              onClick={() => {
+                if (o !== budget) playSwipe();
+                setBudget(o);
+              }}
               className={`flex-1 text-[17px] font-medium capitalize leading-5 tracking-[-0.43px] transition-colors ${o === budget ? "text-ws-bg" : "text-ws-ink"}`}
             >
               {o}
