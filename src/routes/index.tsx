@@ -214,9 +214,10 @@ function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
 
 const BUDGET_OPTIONS = ["small", "medium", "large"] as const;
 type Budget = (typeof BUDGET_OPTIONS)[number];
+const BUDGET_COSTS: Record<Budget, number> = { small: 2500, medium: 7000, large: 10000 };
 
-function BudgetSection({ budget, setBudget, yourName, setYourName }: {
-  budget: Budget; setBudget: (v: Budget) => void; yourName: string; setYourName: (v: string) => void;
+function BudgetSection({ budget, setBudget, cost, setCost }: {
+  budget: Budget; setBudget: (v: Budget) => void; cost: string; setCost: (v: string) => void;
 }) {
   const active = BUDGET_OPTIONS.indexOf(budget);
   return (
@@ -239,7 +240,19 @@ function BudgetSection({ budget, setBudget, yourName, setYourName }: {
           ))}
         </div>
       </div>
-      <TextField value={yourName} onChange={setYourName} placeholder="your name" />
+      <div className="w-full px-4">
+        <div className="flex h-[52px] items-center border-t-2 border-ws-gray">
+          <input
+            value={cost}
+            onChange={(e) => setCost(e.target.value.replace(/[^\d]/g, ""))}
+            inputMode="numeric"
+            placeholder="cost"
+            aria-label="cost in kr"
+            className="flex-1 bg-transparent text-[17px] font-medium tracking-[-0.43px] caret-[#0091ff] outline-none placeholder:text-ws-ink"
+          />
+          <span className="text-[17px] font-medium tracking-[-0.43px]">kr</span>
+        </div>
+      </div>
     </>
   );
 }
