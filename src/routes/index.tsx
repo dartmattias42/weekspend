@@ -29,6 +29,7 @@ function App() {
   const [yourName, setYourName] = useState("");
   const [withCompany, setWithCompany] = useState(false);
   const [budget, setBudget] = useState<"small" | "medium" | "large">("small");
+  const [cost, setCost] = useState("2500");
   const [tripType, setTripType] = useState("city break");
   const [first, setFirst] = useState(() => Math.min(new Date().getDate() + 1, 30));
   const [last, setLast] = useState(() => Math.min(new Date().getDate() + 4, 30));
@@ -69,7 +70,15 @@ function App() {
               <ArrowDown className="pointer-events-none absolute right-[23px] top-1/2 size-5 -translate-y-1/2" strokeWidth={1.75} />
             </div>
             <Rule />
-            <BudgetSection {...{ budget, setBudget, yourName, setYourName }} />
+            <BudgetSection
+              budget={budget}
+              cost={cost}
+              setCost={setCost}
+              setBudget={(b) => {
+                setBudget(b);
+                setCost(String(BUDGET_COSTS[b]));
+              }}
+            />
           </Wizard>
         )}
         {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} />}
@@ -205,9 +214,10 @@ function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
 
 const BUDGET_OPTIONS = ["small", "medium", "large"] as const;
 type Budget = (typeof BUDGET_OPTIONS)[number];
+const BUDGET_COSTS: Record<Budget, number> = { small: 2500, medium: 7000, large: 10000 };
 
-function BudgetSection({ budget, setBudget, yourName, setYourName }: {
-  budget: Budget; setBudget: (v: Budget) => void; yourName: string; setYourName: (v: string) => void;
+function BudgetSection({ budget, setBudget, cost, setCost }: {
+  budget: Budget; setBudget: (v: Budget) => void; cost: string; setCost: (v: string) => void;
 }) {
   const active = BUDGET_OPTIONS.indexOf(budget);
   return (
@@ -230,7 +240,19 @@ function BudgetSection({ budget, setBudget, yourName, setYourName }: {
           ))}
         </div>
       </div>
-      <TextField value={yourName} onChange={setYourName} placeholder="your name" />
+      <div className="w-full px-4">
+        <div className="flex h-[52px] items-center border-t-2 border-ws-gray">
+          <input
+            value={cost}
+            onChange={(e) => setCost(e.target.value.replace(/[^\d]/g, ""))}
+            inputMode="numeric"
+            placeholder="cost"
+            aria-label="cost in kr"
+            className="flex-1 bg-transparent text-[17px] font-medium tracking-[-0.43px] caret-[#0091ff] outline-none placeholder:text-ws-ink"
+          />
+          <span className="text-[17px] font-medium tracking-[-0.43px]">kr</span>
+        </div>
+      </div>
     </>
   );
 }
