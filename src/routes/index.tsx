@@ -79,8 +79,8 @@ function App() {
   const [budget, setBudget] = useState<"small" | "medium" | "large">("small");
   const [cost, setCost] = useState("2500");
   const [tripType, setTripType] = useState<TripType>("city break");
-  const [first, setFirst] = useState(() => Math.min(new Date().getDate() + 1, 30));
-  const [last, setLast] = useState(() => Math.min(new Date().getDate() + 4, 30));
+  const [first, setFirst] = useState(() => isoAddDays(todayIso(), 1));
+  const [last, setLast] = useState(() => isoAddDays(todayIso(), 4));
   const [costEdited, setCostEdited] = useState(false);
   const [dark, setDark] = useState(false);
 
@@ -112,10 +112,10 @@ function App() {
         {step === "dates" && (
           <Wizard progress={2} wide onBack={() => setStep("name")} onCancel={() => setStep("welcome")} onNext={() => setStep("type")}>
             <SectionTitle title="first day" subtitle="the day you depart to your destination" />
-            <Calendar selected={first} onSelect={(d) => { setFirst(d); if (d > last) setLast(d); }} tone="olive" />
+            <Calendar selected={first} onSelect={(d) => { setFirst(d); if (d > last) setLast(d); }} tone="olive" min={todayIso()} />
             <Rule />
             <SectionTitle title="last day" subtitle="the day you travel to home" />
-            <Calendar selected={last} onSelect={(d) => d >= first && setLast(d)} tone="red" min={first} />
+            <Calendar key={first.slice(0, 7)} selected={last} onSelect={(d) => d >= first && setLast(d)} tone="red" min={first} />
           </Wizard>
         )}
         {step === "type" && (
@@ -355,47 +355,94 @@ function BudgetSection({ budget, setBudget, cost, setCost }: {
   );
 }
 
-/* ---------- calendar (April 2027 starts on Thursday) ---------- */
-function Calendar({ selected, onSelect, tone, min = 1 }: { selected: number; onSelect: (d: number) => void; tone: "olive" | "red"; min?: number }) {
-  const cells = useMemo(() => [...Array(3).fill(null), ...Array.from({ length: 30 }, (_, i) => i + 1)], []);
-  const today = new Date().getDate();
+/* ---------- calendar: real months, monday first ---------- */
+const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+const parts = (iso: string) => { const [y = 0, m = 1, d = 1] = iso.split("-").map(Number); return [y, m, d] as const; };
+const pad2 = (n: number) => String(n).padStart(2, "0");
+const isoOf = (y: number, m: number, d: number) => `${y}-${pad2(m + 1)}-${pad2(d)}`;
+function todayIso() {
+  const n = new Date();
+  return isoOf(n.getFullYear(), n.getMonth(), n.getDate());
+}
+function isoAddDays(iso: string, days: number) {
+  const [y, m, d] = parts(iso);
+  const t = new Date(y, m - 1, d + days);
+  return isoOf(t.getFullYear(), t.getMonth(), t.getDate());
+}
+
+function Calendar({ selected, onSelect, tone, min }: { selected: string; onSelect: (d: string) => void; tone: "olive" | "red"; min: string }) {
+  const today = todayIso();
+  const [ty, tm] = parts(today);
+  const startIdx = ty * 12 + tm - 1;
+  const [sy, sm] = parts(selected >= min ? selected : min);
+  const [view, setView] = useState(() => Math.max(startIdx, sy * 12 + sm - 1));
+  const [picking, setPicking] = useState(false);
+  const y = Math.floor(view / 12);
+  const m = view % 12;
+  const cells = useMemo(() => {
+    const offset = (new Date(y, m, 1).getDay() + 6) % 7;
+    const days = new Date(y, m + 1, 0).getDate();
+    return [...Array(offset).fill(null), ...Array.from({ length: days }, (_, i) => i + 1)] as (number | null)[];
+  }, [y, m]);
   return (
     <div className="w-full px-3">
       <div className="flex items-center justify-between pb-[3px] pl-2 pr-[6px] pt-[13px]">
-        <div className="flex items-center gap-1">
-          <span className="text-[17px] font-semibold leading-[22px] tracking-[-0.43px]">april 2027</span>
-          <ChevronRight className="size-4 text-ws-red" strokeWidth={3} />
-        </div>
+        <button type="button" onClick={() => setPicking((p) => !p)} className="flex items-center gap-1" aria-label="choose month">
+          <span className="text-[17px] font-semibold leading-[22px] tracking-[-0.43px]">{MONTHS[m]} {y}</span>
+          <ChevronRight className={`size-4 text-ws-red transition-transform ${picking ? "rotate-90" : ""}`} strokeWidth={3} />
+        </button>
         <div className="flex gap-7">
-          <ChevronLeft className="size-6" />
-          <ChevronRight className="size-6" />
+          <button type="button" aria-label="previous month" disabled={view <= startIdx} onClick={() => setView((v) => v - 1)} className="disabled:opacity-30">
+            <ChevronLeft className="size-6" />
+          </button>
+          <button type="button" aria-label="next month" onClick={() => setView((v) => v + 1)}>
+            <ChevronRight className="size-6" />
+          </button>
         </div>
       </div>
-      <div className="grid grid-cols-7 justify-items-center gap-y-[7px] px-0 py-2">
-        {["sun", "mon", "wed", "thu", "fri", "sat", "sun"].map((d, i) => (
-          <span key={i} className="h-5 text-[13px] font-semibold">{d}</span>
-        ))}
-        {cells.map((d, i) =>
-          d === null ? <span key={i} className="size-[38px]" /> : (
+      {picking ? (
+        <div className="grid grid-cols-3 gap-2 py-3">
+          {Array.from({ length: 12 }, (_, i) => startIdx + i).map((idx) => (
             <button
-              key={i}
-              disabled={d < min}
-              onClick={() => onSelect(d)}
-              className={`flex size-[38px] items-center justify-center rounded-full text-[20px] tracking-[-0.45px] disabled:opacity-30 ${
-                d === selected
-                  ? tone === "olive"
-                    ? "bg-ws-olive text-ws-bg"
-                    : "bg-ws-red font-semibold text-ws-bg"
-                  : d === today
-                    ? "bg-white"
-                    : ""
-              }`}
+              key={idx}
+              type="button"
+              onClick={() => { setView(idx); setPicking(false); }}
+              className={`rounded-full py-2 text-[15px] ${idx === view ? (tone === "olive" ? "bg-ws-olive text-ws-bg" : "bg-ws-red text-ws-bg") : ""}`}
             >
-              {d}
+              {(MONTHS[idx % 12] ?? "").slice(0, 3)} {Math.floor(idx / 12) !== ty ? Math.floor(idx / 12) : ""}
             </button>
-          ),
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-7 justify-items-center gap-y-[7px] px-0 py-2">
+          {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((d) => (
+            <span key={d} className="h-5 text-[13px] font-semibold">{d}</span>
+          ))}
+          {cells.map((d, i) => {
+            if (d === null) return <span key={i} className="size-[38px]" />;
+            const iso = isoOf(y, m, d);
+            return (
+              <button
+                key={i}
+                type="button"
+                disabled={iso < min}
+                onClick={() => onSelect(iso)}
+                className={`flex size-[38px] items-center justify-center rounded-full text-[20px] tracking-[-0.45px] disabled:opacity-30 ${
+                  iso === selected
+                    ? tone === "olive"
+                      ? "bg-ws-olive text-ws-bg"
+                      : "bg-ws-red font-semibold text-ws-bg"
+                    : iso === today
+                      ? "bg-white"
+                      : ""
+                }`}
+              >
+                {d}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
