@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, ArrowDown, ArrowUpRight, Flame, Wind, X } from "lucide-react";
 import pingAsset from "@/assets/ping.mp3.asset.json";
 import fanfareAsset from "@/assets/fanfare.mp3.asset.json";
+import swipeAsset from "@/assets/swipe.mp3.asset.json";
 
 const playPing = () => {
   const audio = new Audio(pingAsset.url);
@@ -12,6 +13,12 @@ const playPing = () => {
 
 const playFanfare = () => {
   const audio = new Audio(fanfareAsset.url);
+  audio.volume = 0.5;
+  void audio.play().catch(() => {});
+};
+
+const playSwipe = () => {
+  const audio = new Audio(swipeAsset.url);
   audio.volume = 0.5;
   void audio.play().catch(() => {});
 };
@@ -211,7 +218,7 @@ function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
         <button
           role="switch"
           aria-checked={withCompany}
-          onClick={() => setWithCompany(!withCompany)}
+          onClick={() => { playSwipe(); setWithCompany(!withCompany); }}
           className={`relative h-8 w-[63px] rounded-2xl border-2 border-ws-ink transition-colors ${withCompany ? "bg-ws-orange" : "bg-ws-bg"}`}
         >
           <span className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${withCompany ? "left-[27px]" : "-left-[2px]"}`} />
