@@ -23,6 +23,34 @@ const playSwipe = () => {
   void audio.play().catch(() => {});
 };
 
+/* subtle ruler tick: a short filtered noise blip, synthesised so no file is needed */
+let tickCtx: AudioContext | null = null;
+let lastTickAt = 0;
+const playTick = () => {
+  const now = performance.now();
+  if (now - lastTickAt < 45) return;
+  lastTickAt = now;
+  const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!Ctx) return;
+  tickCtx ??= new Ctx();
+  const ctx = tickCtx;
+  if (ctx.state === "suspended") void ctx.resume().catch(() => {});
+  const dur = 0.035;
+  const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length) ** 2;
+  const src = ctx.createBufferSource();
+  src.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.value = 2200;
+  filter.Q.value = 1.2;
+  const gain = ctx.createGain();
+  gain.gain.value = 0.06;
+  src.connect(filter).connect(gain).connect(ctx.destination);
+  src.start();
+};
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -442,7 +470,11 @@ function AmountSheet({ amount, setAmount, onClose }: { amount: number; setAmount
       <div className="relative mt-[14px] h-[247px] border-y border-ws-ink bg-ws-gray">
         <div
           ref={ref}
-          onScroll={(e) => setAmount(Math.max(0, Math.round((e.currentTarget.scrollLeft / PX) * 2) / 2))}
+          onScroll={(e) => {
+            const v = Math.max(0, Math.round((e.currentTarget.scrollLeft / PX) * 2) / 2);
+            if (v !== amount) playTick();
+            setAmount(v);
+          }}
           className="h-full overflow-x-auto [scrollbar-width:none]"
         >
           <div className="relative h-full" style={{ width: MAX * PX + 402, paddingLeft: 201 }}>
