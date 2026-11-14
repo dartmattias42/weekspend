@@ -30,8 +30,8 @@ function App() {
   const [withCompany, setWithCompany] = useState(false);
   const [budget, setBudget] = useState<"small" | "medium" | "large">("small");
   const [tripType, setTripType] = useState("city break");
-  const [first, setFirst] = useState(1);
-  const [last, setLast] = useState(4);
+  const [first, setFirst] = useState(() => Math.min(new Date().getDate() + 1, 30));
+  const [last, setLast] = useState(() => Math.min(new Date().getDate() + 4, 30));
 
   return (
     <main className="min-h-screen bg-ws-bg font-ws text-ws-ink">
