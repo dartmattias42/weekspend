@@ -183,7 +183,7 @@ function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
 }) {
   return (
     <>
-      <SectionTitle title="who will join" subtitle="solo or with company?" />
+      <SectionTitle title="your budget" subtitle="on a budget or no restraint" />
       <div className="flex w-full items-center justify-between px-4">
         <button
           role="switch"
