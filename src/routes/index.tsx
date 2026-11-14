@@ -178,7 +178,7 @@ function Rule() {
 function TextField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   return (
     <div className="w-full px-4">
-      <div className="flex h-[52px] items-center border-t-2 border-ws-gray">
+      <div className="flex h-[52px] items-center border-t border-ws-gray">
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -248,7 +248,7 @@ function BudgetSection({ budget, setBudget, cost, setCost }: {
         </div>
       </div>
       <div className="w-full px-4">
-        <div className="flex h-[52px] items-center border-t-2 border-ws-gray">
+        <div className="flex h-[52px] items-center border-t border-ws-gray">
           <input
             value={cost}
             onChange={(e) => setCost(e.target.value.replace(/[^\d]/g, ""))}
@@ -391,7 +391,7 @@ function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: strin
 
 function Row({ cells, className }: { cells: string[]; className: string }) {
   return (
-    <div className={`flex items-center justify-between border-b-2 border-ws-gray px-4 py-3 font-semibold ${className}`}>
+    <div className={`flex items-center justify-between border-b border-ws-gray px-4 py-3 font-semibold ${className}`}>
       <span className="w-[50px]">{cells[0]}</span>
       <span className="w-[100px] text-right">{cells[1]}</span>
       <span className="w-[100px] text-right">{cells[2]}</span>
