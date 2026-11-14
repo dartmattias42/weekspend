@@ -29,6 +29,7 @@ function App() {
   const [yourName, setYourName] = useState("");
   const [withCompany, setWithCompany] = useState(false);
   const [budget, setBudget] = useState<"small" | "medium" | "large">("small");
+  const [cost, setCost] = useState("2500");
   const [tripType, setTripType] = useState("city break");
   const [first, setFirst] = useState(() => Math.min(new Date().getDate() + 1, 30));
   const [last, setLast] = useState(() => Math.min(new Date().getDate() + 4, 30));
@@ -69,7 +70,15 @@ function App() {
               <ArrowDown className="pointer-events-none absolute right-[23px] top-1/2 size-5 -translate-y-1/2" strokeWidth={1.75} />
             </div>
             <Rule />
-            <BudgetSection {...{ budget, setBudget, yourName, setYourName }} />
+            <BudgetSection
+              budget={budget}
+              cost={cost}
+              setCost={setCost}
+              setBudget={(b) => {
+                setBudget(b);
+                setCost(String(BUDGET_COSTS[b]));
+              }}
+            />
           </Wizard>
         )}
         {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} />}
