@@ -229,7 +229,13 @@ function Calendar({ selected, onSelect, tone, min = 1 }: { selected: number; onS
               disabled={d < min}
               onClick={() => onSelect(d)}
               className={`flex size-[38px] items-center justify-center rounded-full text-[20px] tracking-[-0.45px] disabled:opacity-30 ${
-                d === selected ? (tone === "olive" ? "bg-ws-olive text-ws-bg" : "bg-ws-red font-semibold text-ws-bg") : ""
+                d === selected
+                  ? tone === "olive"
+                    ? "bg-ws-olive text-ws-bg"
+                    : "bg-ws-red font-semibold text-ws-bg"
+                  : d === today
+                    ? "bg-ws-bg"
+                    : ""
               }`}
             >
               {d}
