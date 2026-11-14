@@ -2,10 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, ArrowDown, ArrowUpRight, Flame, Wind, X } from "lucide-react";
 import pingAsset from "@/assets/ping.mp3.asset.json";
+import fanfareAsset from "@/assets/fanfare.mp3.asset.json";
 
 const playPing = () => {
   const audio = new Audio(pingAsset.url);
   audio.volume = 0.35;
+  void audio.play().catch(() => {});
+};
+
+const playFanfare = () => {
+  const audio = new Audio(fanfareAsset.url);
+  audio.volume = 0.5;
   void audio.play().catch(() => {});
 };
 
@@ -113,7 +120,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
         powered by <b>dieter rams</b> design principles
       </p>
       <button
-        onClick={onStart}
+        onClick={() => { playFanfare(); onStart(); }}
         className="flex h-[292px] w-full flex-col items-center justify-center gap-8 bg-ws-orange pb-8 pt-16 transition-opacity active:opacity-80"
       >
         <Plus className="size-[115px] text-ws-ink" />
