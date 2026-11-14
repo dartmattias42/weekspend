@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, ArrowDown, ArrowUpRight, Flame, Wind, X } from "lucide-react";
+import pingAsset from "@/assets/ping.mp3.asset.json";
+
+const playPing = () => {
+  const audio = new Audio(pingAsset.url);
+  audio.volume = 0.35;
+  void audio.play().catch(() => {});
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -139,7 +146,7 @@ function Wizard({ children, progress, onBack, onCancel, onNext, wide }: {
         <Rule />
         <div className="h-2" />
         <button
-          onClick={onNext}
+          onClick={() => { playPing(); onNext(); }}
           className={`h-[72px] rounded-[8px] bg-ws-ink text-[22px] leading-7 tracking-[-0.26px] text-ws-bg transition-opacity active:opacity-80 ${wide ? "w-full" : "w-[311px]"}`}
         >
           next
