@@ -25,7 +25,7 @@ const BUDGET_SEK = 3800;
 function App() {
   const [step, setStep] = useState<Step>("welcome");
   const [tripName, setTripName] = useState("");
-  const [destination, setDestination] = useState("");
+  const [guestName, setGuestName] = useState("");
   const [yourName, setYourName] = useState("");
   const [withCompany, setWithCompany] = useState(false);
   const [tripType, setTripType] = useState("city break");
@@ -42,7 +42,7 @@ function App() {
             <TextField value={tripName} onChange={setTripName} placeholder="trip name" />
             <Rule />
             <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
-            <TextField value={destination} onChange={setDestination} placeholder="guests name" />
+            <TextField value={guestName} onChange={setGuestName} placeholder="guests name" />
           </Wizard>
         )}
         {step === "dates" && (
@@ -71,7 +71,7 @@ function App() {
             <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
           </Wizard>
         )}
-        {step === "dashboard" && <Dashboard onBack={() => setStep("type")} />}
+        {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} />}
       </div>
     </main>
   );
@@ -244,7 +244,8 @@ function Calendar({ selected, onSelect, tone, min = 1 }: { selected: number; onS
 const fmt = (n: number) => n.toFixed(2);
 const fmtComma = (n: number) => n.toFixed(2).replace(".", ",");
 
-function Dashboard({ onBack }: { onBack: () => void }) {
+function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: string }) {
+  const guestLabel = guestName || "guest";
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: 1, time: "08:30", czk: 40.3, sek: 18.5, who: "you" },
     { id: 2, time: "08:30", czk: 40.3, sek: 18.5, who: "you" },
@@ -307,7 +308,7 @@ function Dashboard({ onBack }: { onBack: () => void }) {
 
       <div className="fixed bottom-0 left-1/2 grid h-[200px] w-full max-w-[402px] -translate-x-1/2 grid-cols-2 bg-ws-orange">
         <AddButton label="you" light active={adding === "you"} onClick={() => onPress("you")} />
-        <AddButton label="guest" active={adding === "guest"} onClick={() => onPress("guest")} />
+        <AddButton label={guestLabel} active={adding === "guest"} onClick={() => onPress("guest")} />
       </div>
     </div>
   );
