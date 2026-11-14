@@ -81,6 +81,11 @@ function App() {
   const [tripType, setTripType] = useState<TripType>("city break");
   const [first, setFirst] = useState(() => Math.min(new Date().getDate() + 1, 30));
   const [last, setLast] = useState(() => Math.min(new Date().getDate() + 4, 30));
+  const [costEdited, setCostEdited] = useState(false);
+
+  /* two travellers cost twice as much as one */
+  const costFor = (two: boolean, t: TripType = tripType, b: Budget = budget) =>
+    String(BUDGET_COSTS[t][b] * (two ? 2 : 1));
 
   return (
     <main className="min-h-screen bg-ws-bg font-ws text-ws-ink">
@@ -91,7 +96,15 @@ function App() {
             <SectionTitle title="name your trip" subtitle="make a name to long for" />
             <TextField value={tripName} onChange={setTripName} placeholder="trip name" />
             <Rule />
-            <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
+            <WhoWillJoin
+              withCompany={withCompany}
+              setWithCompany={(v) => {
+                setWithCompany(v);
+                if (!costEdited) setCost(costFor(v));
+              }}
+              yourName={yourName}
+              setYourName={setYourName}
+            />
             {withCompany && <TextField value={guestName} onChange={setGuestName} placeholder="guests name" />}
           </Wizard>
         )}
@@ -113,7 +126,8 @@ function App() {
                 onChange={(e) => {
                   const t = e.target.value as TripType;
                   setTripType(t);
-                  setCost(String(BUDGET_COSTS[t][budget]));
+                  setCostEdited(false);
+                  setCost(costFor(withCompany, t, budget));
                 }}
                 className="h-full w-full appearance-none rounded-[23px] bg-transparent px-12 text-center text-[17px] font-medium tracking-[-0.43px] outline-none"
               >
@@ -125,10 +139,14 @@ function App() {
             <BudgetSection
               budget={budget}
               cost={cost}
-              setCost={setCost}
+              setCost={(v) => {
+                setCostEdited(true);
+                setCost(v);
+              }}
               setBudget={(b) => {
                 setBudget(b);
-                setCost(String(BUDGET_COSTS[tripType][b]));
+                setCostEdited(false);
+                setCost(costFor(withCompany, tripType, b));
               }}
             />
           </Wizard>
