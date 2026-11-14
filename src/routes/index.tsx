@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, ArrowDown, ArrowUpRight, Flame, Wind, X } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -243,15 +243,23 @@ function Calendar({ selected, onSelect, tone, min = 1 }: { selected: number; onS
 /* ---------- dashboard ---------- */
 const fmt = (n: number) => n.toFixed(2);
 const fmtComma = (n: number) => n.toFixed(2).replace(".", ",");
+const localTimeNow = () => {
+  const n = new Date();
+  return `${String(n.getHours()).padStart(2, "0")}:${String(n.getMinutes()).padStart(2, "0")}`;
+};
 
 function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: string }) {
   const guestLabel = guestName || "guest";
   const [expenses, setExpenses] = useState<Expense[]>([
-    { id: 1, time: "08:30", czk: 40.3, sek: 18.5, who: "you" },
-    { id: 2, time: "08:30", czk: 40.3, sek: 18.5, who: "you" },
-    { id: 3, time: "08:30", czk: 40.3, sek: 18.5, who: "guest" },
-    { id: 4, time: "08:30", czk: 40.3, sek: 18.5, who: "you" },
+    { id: 1, time: "", czk: 40.3, sek: 18.5, who: "you" },
+    { id: 2, time: "", czk: 40.3, sek: 18.5, who: "you" },
+    { id: 3, time: "", czk: 40.3, sek: 18.5, who: "guest" },
+    { id: 4, time: "", czk: 40.3, sek: 18.5, who: "you" },
   ]);
+  useEffect(() => {
+    const t = localTimeNow();
+    setExpenses((xs) => xs.map((e) => ({ ...e, time: t })));
+  }, []);
   const [adding, setAdding] = useState<null | "you" | "guest">(null);
   const [amount, setAmount] = useState(0);
 
@@ -260,9 +268,7 @@ function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: strin
 
   const confirm = () => {
     if (adding && amount > 0) {
-      const now = new Date();
-      const time = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-      setExpenses((xs) => [{ id: Date.now(), time, czk: amount, sek: amount * CZK_TO_SEK, who: adding }, ...xs]);
+      setExpenses((xs) => [{ id: Date.now(), time: localTimeNow(), czk: amount, sek: amount * CZK_TO_SEK, who: adding }, ...xs]);
     }
     setAdding(null);
     setAmount(0);
