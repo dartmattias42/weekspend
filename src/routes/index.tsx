@@ -43,7 +43,7 @@ function App() {
             <TextField value={tripName} onChange={setTripName} placeholder="trip name" />
             <Rule />
             <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
-            <TextField value={guestName} onChange={setGuestName} placeholder="guests name" />
+            {withCompany && <TextField value={guestName} onChange={setGuestName} placeholder="guests name" />}
           </Wizard>
         )}
         {step === "dates" && (
