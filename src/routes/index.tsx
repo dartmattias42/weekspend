@@ -27,6 +27,7 @@ function App() {
   const [tripName, setTripName] = useState("");
   const [guestName, setGuestName] = useState("");
   const [yourName, setYourName] = useState("");
+  const [withCompany, setWithCompany] = useState(false);
   const [budget, setBudget] = useState<"small" | "medium" | "large">("small");
   const [tripType, setTripType] = useState("city break");
   const [first, setFirst] = useState(1);
@@ -41,7 +42,7 @@ function App() {
             <SectionTitle title="name your trip" subtitle="make a name to long for" />
             <TextField value={tripName} onChange={setTripName} placeholder="trip name" />
             <Rule />
-            <WhoWillJoin {...{ budget, setBudget, yourName, setYourName }} />
+            <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
             <TextField value={guestName} onChange={setGuestName} placeholder="guests name" />
           </Wizard>
         )}
@@ -68,7 +69,7 @@ function App() {
               <ArrowDown className="pointer-events-none absolute right-[23px] top-1/2 size-5 -translate-y-1/2" strokeWidth={1.75} />
             </div>
             <Rule />
-            <WhoWillJoin {...{ budget, setBudget, yourName, setYourName }} />
+            <BudgetSection {...{ budget, setBudget, yourName, setYourName }} />
           </Wizard>
         )}
         {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} />}
