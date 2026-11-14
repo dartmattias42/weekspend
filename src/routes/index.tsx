@@ -373,7 +373,7 @@ function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: strin
           <div className="w-full pb-[220px]">
             <Row className="text-[20px] leading-[25px] tracking-[-0.45px]" cells={["time", "czk", "sek"]} />
             {expenses.map((e) => (
-              <Row key={e.id} className="text-[17px] leading-[22px] tracking-[-0.43px]" cells={[e.time, `${fmtComma(e.czk)} Kč`, `${fmtComma(e.sek)} kr`]} />
+              <Row key={e.id} className="text-[17px] leading-[22px] tracking-[-0.43px]" cells={[e.time, `${fmtComma(e.czk)} Kč`, `${fmt(e.sek)} kr`]} />
             ))}
           </div>
         )}
