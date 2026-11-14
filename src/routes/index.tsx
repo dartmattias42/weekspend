@@ -25,7 +25,7 @@ const BUDGET_SEK = 3800;
 function App() {
   const [step, setStep] = useState<Step>("welcome");
   const [tripName, setTripName] = useState("");
-  const [destination, setDestination] = useState("");
+  const [guestName, setGuestName] = useState("");
   const [yourName, setYourName] = useState("");
   const [withCompany, setWithCompany] = useState(false);
   const [tripType, setTripType] = useState("city break");
@@ -42,7 +42,7 @@ function App() {
             <TextField value={tripName} onChange={setTripName} placeholder="trip name" />
             <Rule />
             <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
-            <TextField value={destination} onChange={setDestination} placeholder="guests name" />
+            <TextField value={guestName} onChange={setGuestName} placeholder="guests name" />
           </Wizard>
         )}
         {step === "dates" && (
@@ -71,7 +71,7 @@ function App() {
             <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
           </Wizard>
         )}
-        {step === "dashboard" && <Dashboard onBack={() => setStep("type")} />}
+        {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} />}
       </div>
     </main>
   );
