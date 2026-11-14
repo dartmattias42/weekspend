@@ -344,9 +344,9 @@ function AmountSheet({ amount, setAmount, onClose }: { amount: number; setAmount
   return (
     <div className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] -translate-x-1/2 overflow-hidden rounded-t-[20px] bg-ws-orange">
       <button onClick={onClose} aria-label="close" className="mx-auto mt-[13px] block h-1 w-[139px] bg-ws-bg" />
-      <div className="mt-3 text-center text-[17px] font-semibold leading-[22px]">
-        <p>czk</p>
-        <p className="tabular-nums">{fmt(amount)}</p>
+      <div className="mt-3 text-center text-[17px] leading-[22px]">
+        <p className="font-medium">czk</p>
+        <p className="font-semibold tabular-nums">{fmt(amount)}</p>
       </div>
       <div className="relative mt-[14px] h-[247px] border-y border-ws-ink bg-ws-gray">
         <div
