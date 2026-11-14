@@ -27,6 +27,7 @@ function App() {
   const [tripName, setTripName] = useState("");
   const [guestName, setGuestName] = useState("");
   const [yourName, setYourName] = useState("");
+  const [withCompany, setWithCompany] = useState(false);
   const [budget, setBudget] = useState<"small" | "medium" | "large">("small");
   const [tripType, setTripType] = useState("city break");
   const [first, setFirst] = useState(1);
@@ -41,7 +42,7 @@ function App() {
             <SectionTitle title="name your trip" subtitle="make a name to long for" />
             <TextField value={tripName} onChange={setTripName} placeholder="trip name" />
             <Rule />
-            <WhoWillJoin {...{ budget, setBudget, yourName, setYourName }} />
+            <WhoWillJoin {...{ withCompany, setWithCompany, yourName, setYourName }} />
             <TextField value={guestName} onChange={setGuestName} placeholder="guests name" />
           </Wizard>
         )}
@@ -68,7 +69,7 @@ function App() {
               <ArrowDown className="pointer-events-none absolute right-[23px] top-1/2 size-5 -translate-y-1/2" strokeWidth={1.75} />
             </div>
             <Rule />
-            <WhoWillJoin {...{ budget, setBudget, yourName, setYourName }} />
+            <BudgetSection {...{ budget, setBudget, yourName, setYourName }} />
           </Wizard>
         )}
         {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} />}
@@ -178,10 +179,34 @@ function TextField({ value, onChange, placeholder }: { value: string; onChange: 
   );
 }
 
+function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
+  withCompany: boolean; setWithCompany: (v: boolean) => void; yourName: string; setYourName: (v: string) => void;
+}) {
+  return (
+    <>
+      <SectionTitle title="who will join" subtitle="solo or with company?" />
+      <div className="flex w-full items-center justify-between px-4">
+        <button
+          role="switch"
+          aria-checked={withCompany}
+          onClick={() => setWithCompany(!withCompany)}
+          className={`relative h-8 w-[63px] rounded-2xl border-2 border-ws-ink transition-colors ${withCompany ? "bg-ws-orange" : "bg-ws-bg"}`}
+        >
+          <span className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${withCompany ? "left-[27px]" : "-left-[2px]"}`} />
+        </button>
+        <span className="text-[17px] font-medium leading-5 tracking-[-0.43px]">
+          {withCompany ? "You bring a guest" : "Only you are on this trip"}
+        </span>
+      </div>
+      <TextField value={yourName} onChange={setYourName} placeholder="your name" />
+    </>
+  );
+}
+
 const BUDGET_OPTIONS = ["small", "medium", "large"] as const;
 type Budget = (typeof BUDGET_OPTIONS)[number];
 
-function WhoWillJoin({ budget, setBudget, yourName, setYourName }: {
+function BudgetSection({ budget, setBudget, yourName, setYourName }: {
   budget: Budget; setBudget: (v: Budget) => void; yourName: string; setYourName: (v: string) => void;
 }) {
   const active = BUDGET_OPTIONS.indexOf(budget);
