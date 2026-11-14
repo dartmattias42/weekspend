@@ -27,7 +27,6 @@ type Step = "welcome" | "name" | "dates" | "type" | "dashboard";
 type Expense = { id: number; time: string; czk: number; sek: number; who: "you" | "guest" };
 
 const CZK_TO_SEK = 18.5 / 40.3;
-const BUDGET_SEK = 3800;
 
 function App() {
   const [step, setStep] = useState<Step>("welcome");
@@ -88,7 +87,7 @@ function App() {
             />
           </Wizard>
         )}
-        {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} />}
+        {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} budgetSek={Number(cost) || 0} />}
       </div>
     </main>
   );
@@ -317,7 +316,7 @@ const localTimeNow = () => {
   return `${String(n.getHours()).padStart(2, "0")}:${String(n.getMinutes()).padStart(2, "0")}`;
 };
 
-function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: string }) {
+function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guestName: string; budgetSek: number }) {
   const guestLabel = guestName || "guest";
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: 1, time: "", czk: 40.3, sek: 18.5, who: "you" },
@@ -353,7 +352,7 @@ function Dashboard({ onBack, guestName }: { onBack: () => void; guestName: strin
             <ChevronLeft className="size-7" strokeWidth={2.25} />
           </button>
           <div className="absolute left-1/2 top-[6px] -translate-x-1/2 text-center">
-            <p className="text-[15px] font-semibold leading-5 tracking-[-0.23px]">{fmt(BUDGET_SEK)} sek</p>
+            <p className="text-[15px] font-semibold leading-5 tracking-[-0.23px]">{fmt(budgetSek)} sek</p>
             <p className="whitespace-nowrap text-[12px] font-medium leading-4 text-ws-muted">your total expence budget</p>
           </div>
         </header>
