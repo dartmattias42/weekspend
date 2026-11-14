@@ -234,7 +234,7 @@ function Calendar({ selected, onSelect, tone, min = 1 }: { selected: number; onS
                     ? "bg-ws-olive text-ws-bg"
                     : "bg-ws-red font-semibold text-ws-bg"
                   : d === today
-                    ? "bg-ws-bg"
+                    ? "bg-white"
                     : ""
               }`}
             >
