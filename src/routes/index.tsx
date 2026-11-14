@@ -30,7 +30,8 @@ const playTick = () => {
   const now = performance.now();
   if (now - lastTickAt < 45) return;
   lastTickAt = now;
-  const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  const Ctx =
+    window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
   if (!Ctx) return;
   tickCtx ??= new Ctx();
   const ctx = tickCtx;
@@ -93,7 +94,12 @@ function App() {
       <div className="relative mx-auto flex min-h-screen w-full max-w-[402px] flex-col">
         {step === "welcome" && <Welcome onStart={() => setStep("name")} dark={dark} setDark={setDark} />}
         {step === "name" && (
-          <Wizard progress={1} onBack={() => setStep("welcome")} onCancel={() => setStep("welcome")} onNext={() => setStep("dates")}>
+          <Wizard
+            progress={1}
+            onBack={() => setStep("welcome")}
+            onCancel={() => setStep("welcome")}
+            onNext={() => setStep("dates")}
+          >
             <SectionTitle title="name your trip" subtitle="make a name to long for" />
             <TextField value={tripName} onChange={setTripName} placeholder="trip name" />
             <Rule />
@@ -110,16 +116,41 @@ function App() {
           </Wizard>
         )}
         {step === "dates" && (
-          <Wizard progress={2} wide onBack={() => setStep("name")} onCancel={() => setStep("welcome")} onNext={() => setStep("type")}>
+          <Wizard
+            progress={2}
+            wide
+            onBack={() => setStep("name")}
+            onCancel={() => setStep("welcome")}
+            onNext={() => setStep("type")}
+          >
             <SectionTitle title="first day" subtitle="the day you depart to your destination" />
-            <Calendar selected={first} onSelect={(d) => { setFirst(d); if (d > last) setLast(d); }} tone="olive" min={todayIso()} />
+            <Calendar
+              selected={first}
+              onSelect={(d) => {
+                setFirst(d);
+                if (d > last) setLast(d);
+              }}
+              tone="olive"
+              min={todayIso()}
+            />
             <Rule />
             <SectionTitle title="last day" subtitle="the day you travel to home" />
-            <Calendar key={first.slice(0, 7)} selected={last} onSelect={(d) => d >= first && setLast(d)} tone="red" min={first} />
+            <Calendar
+              key={first.slice(0, 7)}
+              selected={last}
+              onSelect={(d) => d >= first && setLast(d)}
+              tone="red"
+              min={first}
+            />
           </Wizard>
         )}
         {step === "type" && (
-          <Wizard progress={3} onBack={() => setStep("dates")} onCancel={() => setStep("welcome")} onNext={() => setStep("dashboard")}>
+          <Wizard
+            progress={3}
+            onBack={() => setStep("dates")}
+            onCancel={() => setStep("welcome")}
+            onNext={() => setStep("dashboard")}
+          >
             <SectionTitle title="type of trip" subtitle="select what you guys want the vibe to be..." />
             <div className="relative h-[46px] w-full rounded-[23px] border border-ws-ink">
               <select
@@ -132,9 +163,14 @@ function App() {
                 }}
                 className="h-full w-full appearance-none rounded-[23px] bg-transparent px-12 text-center text-[17px] font-medium tracking-[-0.43px] outline-none"
               >
-                {TRIP_TYPES.map((t) => <option key={t}>{t}</option>)}
+                {TRIP_TYPES.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
               </select>
-              <ArrowDown className="pointer-events-none absolute right-[23px] top-1/2 size-5 -translate-y-1/2" strokeWidth={1.75} />
+              <ArrowDown
+                className="pointer-events-none absolute right-[23px] top-1/2 size-5 -translate-y-1/2"
+                strokeWidth={1.75}
+              />
             </div>
             <Rule />
             <BudgetSection
@@ -152,7 +188,9 @@ function App() {
             />
           </Wizard>
         )}
-        {step === "dashboard" && <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} budgetSek={Number(cost) || 0} />}
+        {step === "dashboard" && (
+          <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} budgetSek={Number(cost) || 0} />
+        )}
       </div>
     </main>
   );
@@ -166,8 +204,8 @@ function Welcome({ onStart, dark, setDark }: { onStart: () => void; dark: boolea
         week<span className="text-ws-olive">[sp]end</span>
       </h1>
       <div className="mt-5 flex gap-[31px]">
-        <span className="size-[19px] rounded-full bg-ws-orange" />
         <span className="size-[19px] rounded-full bg-ws-olive" />
+        <span className="size-[19px] rounded-full bg-ws-orange" />
         <span className="size-[19px] rounded-full bg-ws-red" />
       </div>
       <div className="mt-5 w-[326px] text-center text-[22px] leading-[28px] tracking-[-0.26px]">
@@ -180,17 +218,25 @@ function Welcome({ onStart, dark, setDark }: { onStart: () => void; dark: boolea
           role="switch"
           aria-checked={dark}
           aria-label="dark mode"
-          onClick={() => { playSwipe(); setDark(!dark); }}
+          onClick={() => {
+            playSwipe();
+            setDark(!dark);
+          }}
           className={`relative h-8 w-[63px] rounded-2xl border-2 border-ws-ink transition-colors ${dark ? "bg-ws-orange" : "bg-ws-bg"}`}
         >
-          <span className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${dark ? "left-[27px]" : "-left-[2px]"}`} />
+          <span
+            className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${dark ? "left-[27px]" : "-left-[2px]"}`}
+          />
         </button>
       </div>
       <p className="pb-8 pt-2 text-center text-[13px] leading-[28px] text-ws-orange">
         powered by <b>dieter rams</b> design principles
       </p>
       <button
-        onClick={() => { playFanfare(); onStart(); }}
+        onClick={() => {
+          playFanfare();
+          onStart();
+        }}
         className="flex h-[292px] w-full flex-col items-center justify-center gap-8 bg-ws-orange pb-8 pt-16 transition-opacity active:opacity-80"
       >
         <Plus className="size-[115px] text-ws-ink" />
@@ -201,8 +247,20 @@ function Welcome({ onStart, dark, setDark }: { onStart: () => void; dark: boolea
 }
 
 /* ---------- wizard chrome ---------- */
-function Wizard({ children, progress, onBack, onCancel, onNext, wide }: {
-  children: ReactNode; progress: number; onBack: () => void; onCancel: () => void; onNext: () => void; wide?: boolean;
+function Wizard({
+  children,
+  progress,
+  onBack,
+  onCancel,
+  onNext,
+  wide,
+}: {
+  children: ReactNode;
+  progress: number;
+  onBack: () => void;
+  onCancel: () => void;
+  onNext: () => void;
+  wide?: boolean;
 }) {
   return (
     <div className="flex flex-col items-center px-6 pb-10 pt-4">
@@ -214,7 +272,9 @@ function Wizard({ children, progress, onBack, onCancel, onNext, wide }: {
           <p className="text-[15px] font-semibold leading-5 tracking-[-0.23px]">plan your weekend!</p>
           <p className="text-[12px] font-medium leading-4 text-ws-muted">what the app needs to know</p>
         </div>
-        <button onClick={onCancel} className="h-11 px-[14px] text-[17px] font-medium text-ws-orange">cancel</button>
+        <button onClick={onCancel} className="h-11 px-[14px] text-[17px] font-medium text-ws-orange">
+          cancel
+        </button>
       </header>
       <div className="mt-4 flex w-full flex-col items-center gap-3">
         {children}
@@ -222,7 +282,10 @@ function Wizard({ children, progress, onBack, onCancel, onNext, wide }: {
         <Rule />
         <div className="h-2" />
         <button
-          onClick={() => { playPing(); onNext(); }}
+          onClick={() => {
+            playPing();
+            onNext();
+          }}
           className={`h-[72px] rounded-[8px] bg-ws-ink text-[22px] leading-7 tracking-[-0.26px] text-ws-bg transition-opacity active:opacity-80 ${wide ? "w-full" : "w-[311px]"}`}
         >
           next
@@ -251,7 +314,15 @@ function Rule() {
   return <hr className="w-full border-0 border-t border-ws-ink" />;
 }
 
-function TextField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+function TextField({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+}) {
   return (
     <div className="w-full px-4">
       <div className="flex h-[52px] items-center border-t border-ws-gray">
@@ -262,7 +333,11 @@ function TextField({ value, onChange, placeholder }: { value: string; onChange: 
           className="flex-1 bg-transparent text-[17px] font-medium tracking-[-0.43px] caret-[#0091ff] outline-none placeholder:text-ws-ink"
         />
         {value && (
-          <button onClick={() => onChange("")} aria-label="clear" className="flex size-5 items-center justify-center rounded-full bg-ws-ink text-ws-bg">
+          <button
+            onClick={() => onChange("")}
+            aria-label="clear"
+            className="flex size-5 items-center justify-center rounded-full bg-ws-ink text-ws-bg"
+          >
             <X className="size-3" strokeWidth={3} />
           </button>
         )}
@@ -271,8 +346,16 @@ function TextField({ value, onChange, placeholder }: { value: string; onChange: 
   );
 }
 
-function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
-  withCompany: boolean; setWithCompany: (v: boolean) => void; yourName: string; setYourName: (v: string) => void;
+function WhoWillJoin({
+  withCompany,
+  setWithCompany,
+  yourName,
+  setYourName,
+}: {
+  withCompany: boolean;
+  setWithCompany: (v: boolean) => void;
+  yourName: string;
+  setYourName: (v: string) => void;
 }) {
   return (
     <>
@@ -281,10 +364,15 @@ function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
         <button
           role="switch"
           aria-checked={withCompany}
-          onClick={() => { playSwipe(); setWithCompany(!withCompany); }}
+          onClick={() => {
+            playSwipe();
+            setWithCompany(!withCompany);
+          }}
           className={`relative h-8 w-[63px] rounded-2xl border-2 border-ws-ink transition-colors ${withCompany ? "bg-ws-orange" : "bg-ws-bg"}`}
         >
-          <span className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${withCompany ? "left-[27px]" : "-left-[2px]"}`} />
+          <span
+            className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${withCompany ? "left-[27px]" : "-left-[2px]"}`}
+          />
         </button>
         <span className="text-[17px] font-medium leading-5 tracking-[-0.43px]">
           {withCompany ? "You bring a guest" : "Only you are on this trip"}
@@ -311,8 +399,16 @@ const BUDGET_COSTS: Record<TripType, Record<Budget, number>> = {
   nature: { small: 1500, medium: 4200, large: 6000 },
 };
 
-function BudgetSection({ budget, setBudget, cost, setCost }: {
-  budget: Budget; setBudget: (v: Budget) => void; cost: string; setCost: (v: string) => void;
+function BudgetSection({
+  budget,
+  setBudget,
+  cost,
+  setCost,
+}: {
+  budget: Budget;
+  setBudget: (v: Budget) => void;
+  cost: string;
+  setCost: (v: string) => void;
 }) {
   const active = BUDGET_OPTIONS.indexOf(budget);
   return (
@@ -356,8 +452,24 @@ function BudgetSection({ budget, setBudget, cost, setCost }: {
 }
 
 /* ---------- calendar: real months, monday first ---------- */
-const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-const parts = (iso: string) => { const [y = 0, m = 1, d = 1] = iso.split("-").map(Number); return [y, m, d] as const; };
+const MONTHS = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
+const parts = (iso: string) => {
+  const [y = 0, m = 1, d = 1] = iso.split("-").map(Number);
+  return [y, m, d] as const;
+};
 const pad2 = (n: number) => String(n).padStart(2, "0");
 const isoOf = (y: number, m: number, d: number) => `${y}-${pad2(m + 1)}-${pad2(d)}`;
 function todayIso() {
@@ -370,7 +482,17 @@ function isoAddDays(iso: string, days: number) {
   return isoOf(t.getFullYear(), t.getMonth(), t.getDate());
 }
 
-function Calendar({ selected, onSelect, tone, min }: { selected: string; onSelect: (d: string) => void; tone: "olive" | "red"; min: string }) {
+function Calendar({
+  selected,
+  onSelect,
+  tone,
+  min,
+}: {
+  selected: string;
+  onSelect: (d: string) => void;
+  tone: "olive" | "red";
+  min: string;
+}) {
   const today = todayIso();
   const [ty, tm] = parts(today);
   const startIdx = ty * 12 + tm - 1;
@@ -387,12 +509,28 @@ function Calendar({ selected, onSelect, tone, min }: { selected: string; onSelec
   return (
     <div className="w-full px-3">
       <div className="flex items-center justify-between pb-[3px] pl-2 pr-[6px] pt-[13px]">
-        <button type="button" onClick={() => setPicking((p) => !p)} className="flex items-center gap-1" aria-label="choose month">
-          <span className="text-[17px] font-semibold leading-[22px] tracking-[-0.43px]">{MONTHS[m]} {y}</span>
-          <ChevronRight className={`size-4 text-ws-red transition-transform ${picking ? "rotate-90" : ""}`} strokeWidth={3} />
+        <button
+          type="button"
+          onClick={() => setPicking((p) => !p)}
+          className="flex items-center gap-1"
+          aria-label="choose month"
+        >
+          <span className="text-[17px] font-semibold leading-[22px] tracking-[-0.43px]">
+            {MONTHS[m]} {y}
+          </span>
+          <ChevronRight
+            className={`size-4 text-ws-red transition-transform ${picking ? "rotate-90" : ""}`}
+            strokeWidth={3}
+          />
         </button>
         <div className="flex gap-7">
-          <button type="button" aria-label="previous month" disabled={view <= startIdx} onClick={() => setView((v) => v - 1)} className="disabled:opacity-30">
+          <button
+            type="button"
+            aria-label="previous month"
+            disabled={view <= startIdx}
+            onClick={() => setView((v) => v - 1)}
+            className="disabled:opacity-30"
+          >
             <ChevronLeft className="size-6" />
           </button>
           <button type="button" aria-label="next month" onClick={() => setView((v) => v + 1)}>
@@ -406,7 +544,10 @@ function Calendar({ selected, onSelect, tone, min }: { selected: string; onSelec
             <button
               key={idx}
               type="button"
-              onClick={() => { setView(idx); setPicking(false); }}
+              onClick={() => {
+                setView(idx);
+                setPicking(false);
+              }}
               className={`rounded-full py-2 text-[15px] ${idx === view ? (tone === "olive" ? "bg-ws-olive text-ws-bg" : "bg-ws-red text-ws-bg") : ""}`}
             >
               {(MONTHS[idx % 12] ?? "").slice(0, 3)} {Math.floor(idx / 12) !== ty ? Math.floor(idx / 12) : ""}
@@ -416,7 +557,9 @@ function Calendar({ selected, onSelect, tone, min }: { selected: string; onSelec
       ) : (
         <div className="grid grid-cols-7 justify-items-center gap-y-[7px] px-0 py-2">
           {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((d) => (
-            <span key={d} className="h-5 text-[13px] font-semibold">{d}</span>
+            <span key={d} className="h-5 text-[13px] font-semibold">
+              {d}
+            </span>
           ))}
           {cells.map((d, i) => {
             if (d === null) return <span key={i} className="size-[38px]" />;
@@ -475,7 +618,10 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
 
   const confirm = () => {
     if (adding && amount > 0) {
-      setExpenses((xs) => [{ id: Date.now(), time: localTimeNow(), czk: amount, sek: amount * CZK_TO_SEK, who: adding }, ...xs]);
+      setExpenses((xs) => [
+        { id: Date.now(), time: localTimeNow(), czk: amount, sek: amount * CZK_TO_SEK, who: adding },
+        ...xs,
+      ]);
     }
     setAdding(null);
     setAmount(0);
@@ -487,12 +633,18 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-col items-center gap-3 px-6 pt-4">
         <header className="relative flex h-[54px] w-full items-start pb-[10px]">
-          <button onClick={onBack} aria-label="back" className="flex size-11 items-center justify-center text-ws-orange">
+          <button
+            onClick={onBack}
+            aria-label="back"
+            className="flex size-11 items-center justify-center text-ws-orange"
+          >
             <ChevronLeft className="size-7" strokeWidth={2.25} />
           </button>
           <div className="absolute left-1/2 top-[6px] -translate-x-1/2 text-center">
             <p className="text-[15px] font-semibold leading-5 tracking-[-0.23px]">{fmt(budgetSek)} sek</p>
-            <p className="whitespace-nowrap text-[12px] font-medium leading-4 text-ws-muted">your total expence budget</p>
+            <p className="whitespace-nowrap text-[12px] font-medium leading-4 text-ws-muted">
+              your total expence budget
+            </p>
           </div>
         </header>
 
@@ -511,13 +663,26 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
           <div className="w-full pb-[220px]">
             <Row className="text-[20px] leading-[25px] tracking-[-0.45px]" cells={["time", "czk", "sek"]} />
             {expenses.map((e) => (
-              <Row key={e.id} className="text-[17px] leading-[22px] tracking-[-0.43px]" cells={[e.time, `${fmtComma(e.czk)} Kč`, `${fmt(e.sek)} kr`]} />
+              <Row
+                key={e.id}
+                className="text-[17px] leading-[22px] tracking-[-0.43px]"
+                cells={[e.time, `${fmtComma(e.czk)} Kč`, `${fmt(e.sek)} kr`]}
+              />
             ))}
           </div>
         )}
       </div>
 
-      {adding && <AmountSheet amount={amount} setAmount={setAmount} onClose={() => { setAdding(null); setAmount(0); }} />}
+      {adding && (
+        <AmountSheet
+          amount={amount}
+          setAmount={setAmount}
+          onClose={() => {
+            setAdding(null);
+            setAmount(0);
+          }}
+        />
+      )}
 
       <div className="fixed bottom-0 left-1/2 grid h-[200px] w-full max-w-[402px] -translate-x-1/2 grid-cols-2 bg-ws-orange">
         <AddButton label="you" light active={adding === "you"} onClick={() => onPress("you")} />
@@ -537,10 +702,24 @@ function Row({ cells, className }: { cells: string[]; className: string }) {
   );
 }
 
-function AddButton({ label, light, active, onClick }: { label: string; light?: boolean; active: boolean; onClick: () => void }) {
+function AddButton({
+  label,
+  light,
+  active,
+  onClick,
+}: {
+  label: string;
+  light?: boolean;
+  active: boolean;
+  onClick: () => void;
+}) {
   const color = light ? "text-ws-bg" : "text-ws-ink";
   return (
-    <button onClick={onClick} className={`flex flex-col items-center pt-3 ${color} active:opacity-80`} aria-label={active ? `save ${label} expense` : `add ${label} expense`}>
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center pt-3 ${color} active:opacity-80`}
+      aria-label={active ? `save ${label} expense` : `add ${label} expense`}
+    >
       <span className="text-[22px] leading-7 tracking-[-0.26px]">{label}</span>
       <span className="mt-6">
         {active ? <Wind className="size-[80px]" strokeWidth={1.25} /> : <Plus className="size-[80px]" />}
@@ -552,7 +731,15 @@ function AddButton({ label, light, active, onClick }: { label: string; light?: b
 /* horizontal ruler: 1 czk = 7px */
 const PX = 7;
 const MAX = 2000;
-function AmountSheet({ amount, setAmount, onClose }: { amount: number; setAmount: (n: number) => void; onClose: () => void }) {
+function AmountSheet({
+  amount,
+  setAmount,
+  onClose,
+}: {
+  amount: number;
+  setAmount: (n: number) => void;
+  onClose: () => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] -translate-x-1/2 overflow-hidden rounded-t-[20px] bg-ws-orange">
@@ -580,7 +767,13 @@ function AmountSheet({ amount, setAmount, onClose }: { amount: number; setAmount
               />
             ))}
             {Array.from({ length: MAX / 20 + 1 }).map((_, i) => (
-              <span key={i} className="absolute bottom-[30px] -translate-x-1/2 text-[13px]" style={{ left: 201 + i * 20 * PX }}>{i * 20}</span>
+              <span
+                key={i}
+                className="absolute bottom-[30px] -translate-x-1/2 text-[13px]"
+                style={{ left: 201 + i * 20 * PX }}
+              >
+                {i * 20}
+              </span>
             ))}
           </div>
         </div>
