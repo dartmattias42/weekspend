@@ -179,10 +179,34 @@ function TextField({ value, onChange, placeholder }: { value: string; onChange: 
   );
 }
 
+function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
+  withCompany: boolean; setWithCompany: (v: boolean) => void; yourName: string; setYourName: (v: string) => void;
+}) {
+  return (
+    <>
+      <SectionTitle title="who will join" subtitle="solo or with company?" />
+      <div className="flex w-full items-center justify-between px-4">
+        <button
+          role="switch"
+          aria-checked={withCompany}
+          onClick={() => setWithCompany(!withCompany)}
+          className={`relative h-8 w-[63px] rounded-2xl border-2 border-ws-ink transition-colors ${withCompany ? "bg-ws-orange" : "bg-ws-bg"}`}
+        >
+          <span className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${withCompany ? "left-[27px]" : "-left-[2px]"}`} />
+        </button>
+        <span className="text-[17px] font-medium leading-5 tracking-[-0.43px]">
+          {withCompany ? "You bring a guest" : "Only you are on this trip"}
+        </span>
+      </div>
+      <TextField value={yourName} onChange={setYourName} placeholder="your name" />
+    </>
+  );
+}
+
 const BUDGET_OPTIONS = ["small", "medium", "large"] as const;
 type Budget = (typeof BUDGET_OPTIONS)[number];
 
-function WhoWillJoin({ budget, setBudget, yourName, setYourName }: {
+function BudgetSection({ budget, setBudget, yourName, setYourName }: {
   budget: Budget; setBudget: (v: Budget) => void; yourName: string; setYourName: (v: string) => void;
 }) {
   const active = BUDGET_OPTIONS.indexOf(budget);
