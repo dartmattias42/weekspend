@@ -78,7 +78,7 @@ function App() {
   const [withCompany, setWithCompany] = useState(false);
   const [budget, setBudget] = useState<"small" | "medium" | "large">("small");
   const [cost, setCost] = useState("2500");
-  const [tripType, setTripType] = useState("city break");
+  const [tripType, setTripType] = useState<TripType>("city break");
   const [first, setFirst] = useState(() => Math.min(new Date().getDate() + 1, 30));
   const [last, setLast] = useState(() => Math.min(new Date().getDate() + 4, 30));
 
@@ -110,10 +110,14 @@ function App() {
             <div className="relative h-[46px] w-full rounded-[23px] border border-ws-ink">
               <select
                 value={tripType}
-                onChange={(e) => setTripType(e.target.value)}
+                onChange={(e) => {
+                  const t = e.target.value as TripType;
+                  setTripType(t);
+                  setCost(String(BUDGET_COSTS[t][budget]));
+                }}
                 className="h-full w-full appearance-none rounded-[23px] bg-transparent px-12 text-center text-[17px] font-medium tracking-[-0.43px] outline-none"
               >
-                {["city break", "beach", "food & wine", "culture", "party", "nature"].map((t) => <option key={t}>{t}</option>)}
+                {TRIP_TYPES.map((t) => <option key={t}>{t}</option>)}
               </select>
               <ArrowDown className="pointer-events-none absolute right-[23px] top-1/2 size-5 -translate-y-1/2" strokeWidth={1.75} />
             </div>
@@ -124,7 +128,7 @@ function App() {
               setCost={setCost}
               setBudget={(b) => {
                 setBudget(b);
-                setCost(String(BUDGET_COSTS[b]));
+                setCost(String(BUDGET_COSTS[tripType][b]));
               }}
             />
           </Wizard>
@@ -262,7 +266,19 @@ function WhoWillJoin({ withCompany, setWithCompany, yourName, setYourName }: {
 
 const BUDGET_OPTIONS = ["small", "medium", "large"] as const;
 type Budget = (typeof BUDGET_OPTIONS)[number];
-const BUDGET_COSTS: Record<Budget, number> = { small: 2500, medium: 7000, large: 10000 };
+
+const TRIP_TYPES = ["city break", "beach", "food & wine", "culture", "party", "nature"] as const;
+type TripType = (typeof TRIP_TYPES)[number];
+
+/* kr per tier, by trip type: city break costs the most, nature the least */
+const BUDGET_COSTS: Record<TripType, Record<Budget, number>> = {
+  "city break": { small: 2500, medium: 7000, large: 10000 },
+  party: { small: 2300, medium: 6400, large: 9200 },
+  "food & wine": { small: 2100, medium: 5900, large: 8400 },
+  beach: { small: 1900, medium: 5300, large: 7600 },
+  culture: { small: 1700, medium: 4800, large: 6800 },
+  nature: { small: 1500, medium: 4200, large: 6000 },
+};
 
 function BudgetSection({ budget, setBudget, cost, setCost }: {
   budget: Budget; setBudget: (v: Budget) => void; cost: string; setCost: (v: string) => void;
