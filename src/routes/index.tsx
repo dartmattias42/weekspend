@@ -82,15 +82,16 @@ function App() {
   const [first, setFirst] = useState(() => Math.min(new Date().getDate() + 1, 30));
   const [last, setLast] = useState(() => Math.min(new Date().getDate() + 4, 30));
   const [costEdited, setCostEdited] = useState(false);
+  const [dark, setDark] = useState(false);
 
   /* two travellers cost twice as much as one */
   const costFor = (two: boolean, t: TripType = tripType, b: Budget = budget) =>
     String(BUDGET_COSTS[t][b] * (two ? 2 : 1));
 
   return (
-    <main className="min-h-screen bg-ws-bg font-ws text-ws-ink">
+    <main className={`min-h-screen bg-ws-bg font-ws text-ws-ink transition-colors ${dark ? "ws-dark" : ""}`}>
       <div className="relative mx-auto flex min-h-screen w-full max-w-[402px] flex-col">
-        {step === "welcome" && <Welcome onStart={() => setStep("name")} />}
+        {step === "welcome" && <Welcome onStart={() => setStep("name")} dark={dark} setDark={setDark} />}
         {step === "name" && (
           <Wizard progress={1} onBack={() => setStep("welcome")} onCancel={() => setStep("welcome")} onNext={() => setStep("dates")}>
             <SectionTitle title="name your trip" subtitle="make a name to long for" />
@@ -158,7 +159,7 @@ function App() {
 }
 
 /* ---------- welcome ---------- */
-function Welcome({ onStart }: { onStart: () => void }) {
+function Welcome({ onStart, dark, setDark }: { onStart: () => void; dark: boolean; setDark: (v: boolean) => void }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-between pt-[80px]">
       <h1 className="text-center text-[34px] font-bold leading-[41px] tracking-[0.4px]">
@@ -173,7 +174,19 @@ function Welcome({ onStart }: { onStart: () => void }) {
         <p>get the most bang for the buck out of your weekend trip budget</p>
         <p className="mt-7">only within europe, except bad actor countries</p>
       </div>
-      <p className="mt-auto pb-8 pt-10 text-center text-[13px] leading-[28px] text-ws-orange">
+      <div className="my-auto flex items-center gap-3 pt-8">
+        <span className="text-[17px] font-medium tracking-[-0.43px]">dark mode</span>
+        <button
+          role="switch"
+          aria-checked={dark}
+          aria-label="dark mode"
+          onClick={() => { playSwipe(); setDark(!dark); }}
+          className={`relative h-8 w-[63px] rounded-2xl border-2 border-ws-ink transition-colors ${dark ? "bg-ws-orange" : "bg-ws-bg"}`}
+        >
+          <span className={`absolute -top-[2px] size-8 rounded-full border-2 border-ws-ink bg-ws-bg transition-all ${dark ? "left-[27px]" : "-left-[2px]"}`} />
+        </button>
+      </div>
+      <p className="pb-8 pt-2 text-center text-[13px] leading-[28px] text-ws-orange">
         powered by <b>dieter rams</b> design principles
       </p>
       <button
