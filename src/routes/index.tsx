@@ -5,6 +5,7 @@ import pingAsset from "@/assets/ping.mp3.asset.json";
 import fanfareAsset from "@/assets/fanfare.mp3.asset.json";
 import swipeAsset from "@/assets/swipe.mp3.asset.json";
 import corkPopAsset from "@/assets/cork-pop.mp3.asset.json";
+import tubeHitAsset from "@/assets/tube-hit.mp3.asset.json";
 
 const playPing = () => {
   const audio = new Audio(pingAsset.url);
@@ -26,6 +27,12 @@ const playSwipe = () => {
 
 const playCorkPop = () => {
   const audio = new Audio(corkPopAsset.url);
+  audio.volume = 0.5;
+  void audio.play().catch(() => {});
+};
+
+const playTubeHit = () => {
+  const audio = new Audio(tubeHitAsset.url);
   audio.volume = 0.5;
   void audio.play().catch(() => {});
 };
@@ -701,7 +708,14 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
             onPress("you");
           }}
         />
-        <AddButton label={guestLabel} active={adding === "guest"} onClick={() => onPress("guest")} />
+        <AddButton
+          label={guestLabel}
+          active={adding === "guest"}
+          onClick={() => {
+            playTubeHit();
+            onPress("guest");
+          }}
+        />
       </div>
     </div>
   );
