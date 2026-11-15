@@ -632,6 +632,8 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
 
   const confirm = () => {
     if (adding && amount > 0) {
+      if (adding === "you") playCorkPop();
+      else playTubeHit();
       setExpenses((xs) => [
         { id: Date.now(), time: localTimeNow(), czk: amount, sek: amount * CZK_TO_SEK, who: adding },
         ...xs,
@@ -699,22 +701,11 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
       )}
 
       <div className="fixed bottom-0 left-1/2 grid h-[200px] w-full max-w-[402px] -translate-x-1/2 grid-cols-2 bg-ws-orange">
-        <AddButton
-          label="you"
-          light
-          active={adding === "you"}
-          onClick={() => {
-            playCorkPop();
-            onPress("you");
-          }}
-        />
+        <AddButton label="you" light active={adding === "you"} onClick={() => onPress("you")} />
         <AddButton
           label={guestLabel}
           active={adding === "guest"}
-          onClick={() => {
-            playTubeHit();
-            onPress("guest");
-          }}
+          onClick={() => onPress("guest")}
         />
       </div>
     </div>
