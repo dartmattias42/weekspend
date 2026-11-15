@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, ArrowDown, ArrowUpRight, Flame, Wind, X } fr
 import pingAsset from "@/assets/ping.mp3.asset.json";
 import fanfareAsset from "@/assets/fanfare.mp3.asset.json";
 import swipeAsset from "@/assets/swipe.mp3.asset.json";
+import corkPopAsset from "@/assets/cork-pop.mp3.asset.json";
 
 const playPing = () => {
   const audio = new Audio(pingAsset.url);
@@ -19,6 +20,12 @@ const playFanfare = () => {
 
 const playSwipe = () => {
   const audio = new Audio(swipeAsset.url);
+  audio.volume = 0.5;
+  void audio.play().catch(() => {});
+};
+
+const playCorkPop = () => {
+  const audio = new Audio(corkPopAsset.url);
   audio.volume = 0.5;
   void audio.play().catch(() => {});
 };
@@ -685,7 +692,15 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
       )}
 
       <div className="fixed bottom-0 left-1/2 grid h-[200px] w-full max-w-[402px] -translate-x-1/2 grid-cols-2 bg-ws-orange">
-        <AddButton label="you" light active={adding === "you"} onClick={() => onPress("you")} />
+        <AddButton
+          label="you"
+          light
+          active={adding === "you"}
+          onClick={() => {
+            playCorkPop();
+            onPress("you");
+          }}
+        />
         <AddButton label={guestLabel} active={adding === "guest"} onClick={() => onPress("guest")} />
       </div>
     </div>
