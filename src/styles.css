@@ -165,8 +165,7 @@
   --ws-dot-you: #ffffff; --ws-dot-guest: #3a3630; /* pure black vanishes on the near-black page */
 }
 @theme inline {
-  --color-ws-bg: var(--ws-bg);
-  --color-ws-ink: var(--ws-ink);
+  --color-ws-bg: var(--ws-bg);  --color-ws-ink: var(--ws-ink);
   --color-ws-orange: #ed8008;
   --color-ws-olive: #736b1e;
   --color-ws-red: #bf1b1b;
