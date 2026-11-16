@@ -771,9 +771,48 @@ function AmountSheet({
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [dragY, setDragY] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const startY = useRef(0);
+
+  const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    startY.current = e.clientY - dragY;
+    setDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!dragging) return;
+    setDragY(Math.max(0, e.clientY - startY.current));
+  };
+  const onPointerUp = () => {
+    setDragging(false);
+    if (dragY > 120) {
+      setClosing(true);
+      setDragY(600);
+      setTimeout(onClose, 300);
+    } else {
+      setDragY(0);
+    }
+  };
+
   return (
-    <div className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] -translate-x-1/2 overflow-hidden rounded-t-[20px] bg-ws-orange">
-      <button onClick={onClose} aria-label="close" className="mx-auto mt-[13px] block h-1 w-[139px] bg-ws-bg" />
+    <div
+      className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] -translate-x-1/2 overflow-hidden rounded-t-[20px] bg-ws-orange"
+      style={{
+        translate: `0 ${dragY}px`,
+        transition: dragging ? "none" : "translate 0.3s ease-in-out",
+      }}
+    >
+      <button
+        onClick={dragY === 0 && !closing ? onClose : undefined}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        aria-label="close"
+        className="mx-auto mt-[13px] block h-1 w-[139px] cursor-grab touch-none bg-ws-bg active:cursor-grabbing"
+      />
       <div className="mt-3 text-center text-[17px] leading-[22px]">
         <p className="font-medium">czk</p>
         <p className="text-[21px] font-semibold tabular-nums">{fmt(amount)}</p>
