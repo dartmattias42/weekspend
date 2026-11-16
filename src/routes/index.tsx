@@ -683,6 +683,7 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
                 key={e.id}
                 className="text-[17px] leading-[22px] tracking-[-0.43px]"
                 cells={[e.time, `${fmtComma(e.czk)} Kč`, `${fmt(e.sek)} kr`]}
+                dot={e.who}
               />
             ))}
           </div>
@@ -712,12 +713,21 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
   );
 }
 
-function Row({ cells, className }: { cells: string[]; className: string }) {
+function Row({ cells, className, dot }: { cells: string[]; className: string; dot?: "you" | "guest" }) {
   return (
     <div className={`flex items-center justify-between border-b border-ws-gray px-4 py-3 font-semibold ${className}`}>
       <span className="w-[50px]">{cells[0]}</span>
       <span className="w-[100px] text-right">{cells[1]}</span>
-      <span className="w-[100px] text-right">{cells[2]}</span>
+      <span className="flex w-[100px] items-center justify-end gap-2">
+        {dot && (
+          <span
+            className={`size-2 shrink-0 rounded-full border border-ws-muted/60 ${
+              dot === "you" ? "bg-ws-dot-you" : "bg-ws-dot-guest"
+            }`}
+          />
+        )}
+        <span>{cells[2]}</span>
+      </span>
     </div>
   );
 }
