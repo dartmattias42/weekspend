@@ -157,12 +157,12 @@
 /* weekspend palette (from Figma "Image Palette"); dark mode reuses the same hues */
 :root {
   --ws-bg: #e7e7e7; --ws-ink: #070707; --ws-gray: #c4c4c4; --ws-warm: #d9d2c6; --ws-muted: #727272;
-  /* spending markers: white = you, black = your guest */
-  --ws-dot-you: #ffffff; --ws-dot-guest: #070707;
+  /* spending markers: black = you, white = your guest (same in dark mode) */
+  --ws-dot-you: #070707; --ws-dot-guest: #ffffff;
 }
 .ws-dark {
   --ws-bg: #070707; --ws-ink: #e7e7e7; --ws-gray: #2a2a2a; --ws-warm: #3a3630; --ws-muted: #c4c4c4;
-  /* spending markers keep the same colors as light mode: white = you, black = your guest */
+  /* spending markers keep the same colors as light mode: black = you, white = your guest */
 }
 @theme inline {
   --color-ws-bg: var(--ws-bg);
