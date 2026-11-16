@@ -677,7 +677,12 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
           <p className="text-[17px] font-medium leading-7 tracking-[-0.43px]">sek spent today</p>
           <p className="text-[39px] font-medium leading-[31px] text-ws-flame tabular-nums">{fmt(todaySek)}</p>
           <ArrowUpRight className="absolute bottom-[20px] left-[20px] size-7 text-ws-flame" strokeWidth={1.5} />
-          <Flame className="absolute bottom-[18px] right-[20px] size-7 text-ws-flame" strokeWidth={1.5} />
+          <Flame
+            className={`absolute bottom-[18px] right-[20px] size-7 ${
+              totalSek >= budgetSek * 0.8 ? "text-ws-flame" : "text-ws-muted"
+            }`}
+            strokeWidth={1.5}
+          />
         </section>
 
         <div className="h-2" />
