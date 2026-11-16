@@ -773,39 +773,46 @@ function AmountSheet({
   const ref = useRef<HTMLDivElement>(null);
   const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [closing, setClosing] = useState(false);
-  const startY = useRef(0);
+  const dragState = useRef({ startY: 0, y: 0, active: false });
 
   const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
-    startY.current = e.clientY - dragY;
+    dragState.current = { startY: e.clientY - dragState.current.y, y: dragState.current.y, active: true };
     setDragging(true);
     e.currentTarget.setPointerCapture(e.pointerId);
   };
   const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (!dragging) return;
-    setDragY(Math.max(0, e.clientY - startY.current));
+    if (!dragState.current.active) return;
+    const y = Math.max(0, e.clientY - dragState.current.startY);
+    dragState.current.y = y;
+    setDragY(y);
   };
   const onPointerUp = () => {
+    if (!dragState.current.active) return;
+    dragState.current.active = false;
     setDragging(false);
-    if (dragY > 120) {
-      setClosing(true);
+    if (dragState.current.y > 120) {
+      dragState.current.y = 600;
       setDragY(600);
-      setTimeout(onClose, 300);
+      setTimeout(() => {
+        dragState.current.y = 0;
+        setDragY(0);
+        onClose();
+      }, 300);
     } else {
+      dragState.current.y = 0;
       setDragY(0);
     }
   };
 
   return (
     <div
-      className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] -translate-x-1/2 overflow-hidden rounded-t-[20px] bg-ws-orange"
+      className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] overflow-hidden rounded-t-[20px] bg-ws-orange"
       style={{
-        translate: `0 ${dragY}px`,
-        transition: dragging ? "none" : "translate 0.3s ease-in-out",
+        transform: `translateX(-50%) translateY(${dragY}px)`,
+        transition: dragging ? "none" : "transform 0.3s ease-in-out",
       }}
     >
       <button
-        onClick={dragY === 0 && !closing ? onClose : undefined}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
