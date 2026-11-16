@@ -771,9 +771,55 @@ function AmountSheet({
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [dragY, setDragY] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const dragState = useRef({ startY: 0, y: 0, active: false });
+
+  const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    dragState.current = { startY: e.clientY - dragState.current.y, y: dragState.current.y, active: true };
+    setDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!dragState.current.active) return;
+    const y = Math.max(0, e.clientY - dragState.current.startY);
+    dragState.current.y = y;
+    setDragY(y);
+  };
+  const onPointerUp = () => {
+    if (!dragState.current.active) return;
+    dragState.current.active = false;
+    setDragging(false);
+    if (dragState.current.y > 120) {
+      dragState.current.y = 600;
+      setDragY(600);
+      setTimeout(() => {
+        dragState.current.y = 0;
+        setDragY(0);
+        onClose();
+      }, 300);
+    } else {
+      dragState.current.y = 0;
+      setDragY(0);
+    }
+  };
+
   return (
-    <div className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] -translate-x-1/2 overflow-hidden rounded-t-[20px] bg-ws-orange">
-      <button onClick={onClose} aria-label="close" className="mx-auto mt-[13px] block h-1 w-[139px] bg-ws-bg" />
+    <div
+      className="fixed bottom-[200px] left-1/2 h-[337px] w-full max-w-[402px] overflow-hidden rounded-t-[20px] bg-ws-orange"
+      style={{
+        transform: `translateX(-50%) translateY(${dragY}px)`,
+        transition: dragging ? "none" : "transform 0.3s ease-in-out",
+      }}
+    >
+      <button
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        aria-label="close"
+        className="mx-auto mt-[13px] block h-1 w-[139px] cursor-grab touch-none bg-ws-bg active:cursor-grabbing"
+      />
       <div className="mt-3 text-center text-[17px] leading-[22px]">
         <p className="font-medium">czk</p>
         <p className="text-[21px] font-semibold tabular-nums">{fmt(amount)}</p>
