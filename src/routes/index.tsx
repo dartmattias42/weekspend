@@ -427,7 +427,7 @@ function BudgetSection({
   const active = BUDGET_OPTIONS.indexOf(budget);
   return (
     <>
-      <SectionTitle title="your budget" subtitle="on a budget or no restraint" />
+      <SectionTitle title="your budget" subtitle="on a budget or like there's no tomorrow" />
       <div className="relative h-[46px] w-full rounded-[23px] border border-ws-ink bg-ws-gray">
         <span
           className="absolute inset-y-[3px] rounded-[22px] bg-ws-ink transition-all"
