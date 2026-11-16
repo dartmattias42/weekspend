@@ -162,7 +162,7 @@
 }
 .ws-dark {
   --ws-bg: #070707; --ws-ink: #e7e7e7; --ws-gray: #2a2a2a; --ws-warm: #3a3630; --ws-muted: #c4c4c4;
-  --ws-dot-you: #ffffff; --ws-dot-guest: #070707;
+  --ws-dot-you: #ffffff; --ws-dot-guest: #3a3630; /* pure black vanishes on the near-black page */
 }
 @theme inline {
   --color-ws-bg: var(--ws-bg);
