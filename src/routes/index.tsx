@@ -664,7 +664,7 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
           </div>
         </header>
 
-        <section className="relative h-[178px] w-full rounded-[20px] bg-ws-gray pt-[6px] text-center">
+        <section className="relative flex h-[178px] w-full flex-col justify-center rounded-[20px] bg-ws-gray text-center">
           <p className="text-[17px] font-medium leading-7 tracking-[-0.43px]">sek spent of budget</p>
           <p
             className={`text-[50px] leading-9 tabular-nums ${
