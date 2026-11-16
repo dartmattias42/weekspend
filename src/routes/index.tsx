@@ -721,7 +721,7 @@ function Row({ cells, className, dot }: { cells: string[]; className: string; do
       <span className="flex w-[100px] items-center justify-end gap-2">
         {dot && (
           <span
-            className={`size-2 shrink-0 rounded-full border border-ws-muted/60 ${
+            className={`size-[10px] shrink-0 rounded-full border border-ws-muted ${
               dot === "you" ? "bg-ws-dot-you" : "bg-ws-dot-guest"
             }`}
           />
