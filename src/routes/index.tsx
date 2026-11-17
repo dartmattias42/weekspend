@@ -66,6 +66,32 @@ const playTick = () => {
   src.start();
 };
 
+/* dry click: a very short, dry synthesised tap for picking a date */
+let clickCtx: AudioContext | null = null;
+const playClick = () => {
+  const Ctx =
+    window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!Ctx) return;
+  clickCtx ??= new Ctx();
+  const ctx = clickCtx;
+  if (ctx.state === "suspended") void ctx.resume().catch(() => {});
+  const t0 = ctx.currentTime;
+  const dur = 0.018;
+  const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length) ** 3;
+  const src = ctx.createBufferSource();
+  src.buffer = buffer;
+  const hp = ctx.createBiquadFilter();
+  hp.type = "highpass";
+  hp.frequency.value = 1400;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.09, t0);
+  gain.gain.exponentialRampToValueAtTime(0.0005, t0 + dur);
+  src.connect(hp).connect(gain).connect(ctx.destination);
+  src.start(t0);
+};
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -583,7 +609,10 @@ function Calendar({
                 key={i}
                 type="button"
                 disabled={iso < min}
-                onClick={() => onSelect(iso)}
+                onClick={() => {
+                  playClick();
+                  onSelect(iso);
+                }}
                 className={`flex size-[38px] items-center justify-center rounded-full text-[20px] tracking-[-0.45px] disabled:opacity-30 ${
                   iso === selected
                     ? tone === "olive"
