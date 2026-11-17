@@ -762,7 +762,7 @@ function Row({ cells, className, dot }: { cells: string[]; className: string; do
         {dot && (
           <span
             className={`ws-dot size-[14px] shrink-0 rounded-full border ${
-              dot === "you" ? "border-ws-dot-you bg-ws-dot-you" : "border-ws-gray bg-ws-dot-guest"
+              dot === "you" ? "border-ws-gray bg-ws-dot-you" : "border-ws-dot-guest bg-ws-dot-guest"
             }`}
           />
         )}
