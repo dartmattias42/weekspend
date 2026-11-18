@@ -229,7 +229,12 @@ function App() {
           </Wizard>
         )}
         {step === "dashboard" && (
-          <Dashboard onBack={() => setStep("type")} guestName={guestName.trim()} budgetSek={Number(cost) || 0} />
+          <Dashboard
+            onBack={() => setStep("type")}
+            guestName={guestName.trim()}
+            budgetSek={Number(cost) || 0}
+            days={daysBetween(first, last)}
+          />
         )}
       </div>
     </main>
@@ -521,6 +526,14 @@ function isoAddDays(iso: string, days: number) {
   const t = new Date(y, m - 1, d + days);
   return isoOf(t.getFullYear(), t.getMonth(), t.getDate());
 }
+/* inclusive day count of the selected trip, used for the daily budget */
+function daysBetween(first: string, last: string) {
+  const [fy, fm, fd] = parts(first);
+  const [ly, lm, ld] = parts(last);
+  const a = new Date(fy, fm - 1, fd).getTime();
+  const b = new Date(ly, lm - 1, ld).getTime();
+  return Math.max(1, Math.round((b - a) / 86400000) + 1);
+}
 
 function Calendar({
   selected,
@@ -641,7 +654,17 @@ const localTimeNow = () => {
   return `${String(n.getHours()).padStart(2, "0")}:${String(n.getMinutes()).padStart(2, "0")}`;
 };
 
-function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guestName: string; budgetSek: number }) {
+function Dashboard({
+  onBack,
+  guestName,
+  budgetSek,
+  days,
+}: {
+  onBack: () => void;
+  guestName: string;
+  budgetSek: number;
+  days: number;
+}) {
   const guestLabel = guestName || "guest";
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: 1, time: "", czk: 40.3, sek: 18.5, who: "you" },
@@ -658,6 +681,8 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
 
   const totalSek = expenses.reduce((s, e) => s + e.sek, 0);
   const todaySek = totalSek; // all demo expenses are from today
+  const dailyBudget = budgetSek / Math.max(1, days);
+  const overDaily = todaySek > dailyBudget;
 
   const confirm = () => {
     if (adding && amount > 0) {
@@ -705,7 +730,10 @@ function Dashboard({ onBack, guestName, budgetSek }: { onBack: () => void; guest
           <p className="text-[17px] font-semibold leading-5 text-ws-bg">. . .</p>
           <p className="text-[17px] font-medium leading-7 tracking-[-0.43px]">sek spent today</p>
           <p className="text-[39px] font-medium leading-[31px] text-ws-flame tabular-nums">{fmt(todaySek)}</p>
-          <ArrowUpRight className="absolute bottom-[20px] left-[20px] size-7 text-ws-flame" strokeWidth={1.5} />
+          <ArrowUpRight
+            className={`absolute bottom-[20px] left-[20px] size-7 ${overDaily ? "text-ws-flame" : "text-ws-olive"}`}
+            strokeWidth={1.5}
+          />
           <Flame
             className={`absolute bottom-[18px] right-[20px] size-7 ${
               totalSek >= budgetSek * 0.8 ? "text-ws-flame" : "text-ws-muted"
