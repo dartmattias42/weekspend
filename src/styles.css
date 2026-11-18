@@ -178,3 +178,7 @@
   --color-ws-dot-guest: var(--ws-dot-guest);
   --font-ws: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
 }
+
+/* red flame pulse: 10% -> 150% from center, 1s loop */
+@keyframes ws-pulse { 0%,100% { transform: scale(0.1); } 50% { transform: scale(1.5); } }
+.ws-pulse { transform-origin: center; transform-box: fill-box; animation: ws-pulse 1s ease-in-out infinite; }

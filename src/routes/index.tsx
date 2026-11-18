@@ -681,6 +681,16 @@ function Dashboard({
 
   const totalSek = expenses.reduce((s, e) => s + e.sek, 0);
   const todaySek = totalSek; // all demo expenses are from today
+  const flameHot = totalSek >= budgetSek * 0.8;
+  const [pulseDay, setPulseDay] = useState(() => new Date().toDateString());
+  useEffect(() => {
+    if (!flameHot) return;
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
+    const t = setTimeout(() => setPulseDay("expired"), midnight - now.getTime());
+    return () => clearTimeout(t);
+  }, [flameHot]);
+  const flamePulse = flameHot && pulseDay !== "expired";
   const dailyBudget = budgetSek / Math.max(1, days);
   const overDaily = todaySek > dailyBudget;
 
@@ -736,8 +746,8 @@ function Dashboard({
           />
           <Flame
             className={`absolute bottom-[18px] right-[20px] size-7 ${
-              totalSek >= budgetSek * 0.8 ? "text-ws-flame" : "text-ws-muted"
-            }`}
+              flameHot ? "text-ws-flame" : "text-ws-muted"
+            } ${flamePulse ? "ws-pulse" : ""}`}
             strokeWidth={1.5}
           />
         </section>
