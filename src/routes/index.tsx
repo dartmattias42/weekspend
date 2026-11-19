@@ -1011,7 +1011,7 @@ function Summary({
         <Box label="budget" value={fmt(budgetSek)} bg="bg-ws-orange/25" />
         <Box label={left < 0 ? "over budget" : "left of budget"} value={fmt(Math.abs(left))} tone={left < 0 ? "text-ws-red" : ""} bg="bg-ws-olive/25" />
         <Box label="per day" value={fmt(perDay)} bg="bg-ws-flame/25" />
-        <Box label="expenses" value={String(expenses.length)} bg="bg-ws-red/40" />
+        <Box label="expenses" value={String(expenses.length)} bg="bg-ws-red/30" />
       </div>
 
       <p className="mt-8 text-[20px] font-semibold leading-[25px]">who spent what</p>
