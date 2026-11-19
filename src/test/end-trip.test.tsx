@@ -17,7 +17,7 @@ const renderApp = async () => {
 };
 
 describe("end trip", () => {
-  it("returns to the welcome screen when tapped on the dashboard", async () => {
+  it("shows the summary, and save trip returns to welcome", async () => {
     await renderApp();
 
     // welcome -> name -> dates -> type -> dashboard
@@ -25,6 +25,9 @@ describe("end trip", () => {
     for (let i = 0; i < 3; i++) fireEvent.click(screen.getByText("next"));
 
     fireEvent.click(screen.getByText("end trip"));
+    expect(screen.getByText("who spent what")).toBeTruthy();
+    expect(screen.queryByText("end trip")).toBeNull();
+    fireEvent.click(screen.getByText("save trip"));
 
     expect(screen.getByText("new weekend away")).toBeTruthy();
     expect(screen.queryByText("end trip")).toBeNull();

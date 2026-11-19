@@ -106,7 +106,7 @@ export const Route = createFileRoute("/")({
   component: App,
 });
 
-type Step = "welcome" | "name" | "dates" | "type" | "dashboard";
+type Step = "welcome" | "name" | "dates" | "type" | "dashboard" | "summary";
 type Expense = { id: number; time: string; czk: number; sek: number; who: "you" | "guest" };
 
 const CZK_TO_SEK = 18.5 / 40.3;
@@ -124,6 +124,7 @@ function App() {
   const [last, setLast] = useState(() => isoAddDays(todayIso(), 4));
   const [costEdited, setCostEdited] = useState(false);
   const [dark, setDark] = useState(false);
+  const [ended, setEnded] = useState<Expense[]>([]);
 
   /* two travellers cost twice as much as one */
   const costFor = (two: boolean, t: TripType = tripType, b: Budget = budget) =>
@@ -231,10 +232,24 @@ function App() {
         {step === "dashboard" && (
           <Dashboard
             onBack={() => setStep("type")}
-            onEnd={() => setStep("welcome")}
+            onEnd={(xs) => {
+              setEnded(xs);
+              setStep("summary");
+            }}
             guestName={guestName.trim()}
             budgetSek={Number(cost) || 0}
             days={daysBetween(first, last)}
+          />
+        )}
+        {step === "summary" && (
+          <Summary
+            tripName={tripName.trim() || "my trip"}
+            guestName={guestName.trim()}
+            withGuest={withCompany || ended.some((e) => e.who === "guest")}
+            budgetSek={Number(cost) || 0}
+            days={daysBetween(first, last)}
+            expenses={ended}
+            onSave={() => setStep("welcome")}
           />
         )}
       </div>
@@ -663,7 +678,7 @@ function Dashboard({
   days,
 }: {
   onBack: () => void;
-  onEnd: () => void;
+  onEnd: (expenses: Expense[]) => void;
   guestName: string;
   budgetSek: number;
   days: number;
@@ -730,7 +745,7 @@ function Dashboard({
             </p>
           </div>
           <button
-            onClick={onEnd}
+            onClick={() => onEnd(expenses)}
             className="ml-auto h-11 px-[14px] text-[17px] font-medium text-ws-orange"
           >
             end trip
@@ -952,5 +967,80 @@ function Plus({ className }: { className?: string }) {
       <line x1="57.5" y1="0" x2="57.5" y2="115" />
       <line x1="0" y1="57.5" x2="115" y2="57.5" />
     </svg>
+  );
+}
+
+/* ---------- summary ---------- */
+function Summary({
+  tripName,
+  guestName,
+  withGuest,
+  budgetSek,
+  days,
+  expenses,
+  onSave,
+}: {
+  tripName: string;
+  guestName: string;
+  withGuest: boolean;
+  budgetSek: number;
+  days: number;
+  expenses: Expense[];
+  onSave: () => void;
+}) {
+  const total = expenses.reduce((s, e) => s + e.sek, 0);
+  const you = expenses.filter((e) => e.who === "you").reduce((s, e) => s + e.sek, 0);
+  const guest = total - you;
+  const left = budgetSek - total;
+  const perDay = total / Math.max(1, days);
+  const Box = ({ label, value, tone = "" }: { label: string; value: string; tone?: string }) => (
+    <div className="flex flex-col items-center justify-center rounded-[20px] bg-ws-gray px-3 py-5 text-center">
+      <p className="text-[15px] font-medium leading-5 text-ws-muted">{label}</p>
+      <p className={`text-[28px] font-bold leading-9 tabular-nums ${tone}`}>{value}</p>
+    </div>
+  );
+  return (
+    <div className="flex min-h-screen flex-col px-6 pb-10 pt-[60px]">
+      <h1 className="text-center text-[34px] font-bold leading-[41px] tracking-[0.4px]">{tripName}</h1>
+      <p className="mt-1 text-center text-[17px] font-medium text-ws-muted">trip summary · {days} days</p>
+
+      <div className="mt-8 grid grid-cols-2 gap-3">
+        <div className="col-span-2">
+          <Box label="sek spent in total" value={fmt(total)} tone={total > budgetSek ? "text-ws-red" : "text-ws-olive"} />
+        </div>
+        <Box label="budget" value={fmt(budgetSek)} />
+        <Box label={left < 0 ? "over budget" : "left of budget"} value={fmt(Math.abs(left))} tone={left < 0 ? "text-ws-red" : ""} />
+        <Box label="per day" value={fmt(perDay)} />
+        <Box label="expenses" value={String(expenses.length)} />
+      </div>
+
+      <p className="mt-8 text-[20px] font-semibold leading-[25px]">who spent what</p>
+      <div className="mt-2">
+        <div className="flex items-center justify-between border-b border-ws-gray px-4 py-3 text-[17px] font-semibold">
+          <span>{"you"}</span>
+          <span className="flex items-center gap-2 tabular-nums">
+            <span className="ws-dot size-[14px] rounded-full border border-ws-gray bg-ws-dot-you" />
+            {fmt(you)} kr
+          </span>
+        </div>
+        {withGuest && (
+          <div className="flex items-center justify-between border-b border-ws-gray px-4 py-3 text-[17px] font-semibold">
+          <span>{guestName || "guest"}</span>
+          <span className="flex items-center gap-2 tabular-nums">
+            <span className="ws-dot size-[14px] rounded-full border border-ws-dot-guest bg-ws-dot-guest" />
+            {fmt(guest)} kr
+          </span>
+        </div>
+        )}
+      </div>
+
+      <div className="flex-1" />
+      <button
+        onClick={onSave}
+        className="mt-10 h-[60px] w-full rounded-[14px] bg-ws-ink text-[20px] font-semibold text-ws-bg"
+      >
+        save trip
+      </button>
+    </div>
   );
 }
