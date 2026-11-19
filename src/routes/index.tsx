@@ -353,7 +353,7 @@ function Wizard({
         </button>
         <div className="h-2" />
         <div className="flex gap-[10px]">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 3 }).map((_, i) => (
             <span key={i} className={`h-[3px] w-10 ${i < progress ? "bg-ws-orange" : "bg-ws-warm"}`} />
           ))}
         </div>
