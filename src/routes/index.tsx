@@ -231,6 +231,7 @@ function App() {
         {step === "dashboard" && (
           <Dashboard
             onBack={() => setStep("type")}
+            onEnd={() => setStep("welcome")}
             guestName={guestName.trim()}
             budgetSek={Number(cost) || 0}
             days={daysBetween(first, last)}
@@ -656,11 +657,13 @@ const localTimeNow = () => {
 
 function Dashboard({
   onBack,
+  onEnd,
   guestName,
   budgetSek,
   days,
 }: {
   onBack: () => void;
+  onEnd: () => void;
   guestName: string;
   budgetSek: number;
   days: number;
@@ -726,6 +729,12 @@ function Dashboard({
               your total expence budget
             </p>
           </div>
+          <button
+            onClick={onEnd}
+            className="ml-auto h-11 px-[14px] text-[17px] font-medium text-ws-orange"
+          >
+            end trip
+          </button>
         </header>
 
         <section className="relative flex h-[178px] w-full flex-col justify-center rounded-[20px] bg-ws-gray text-center">
