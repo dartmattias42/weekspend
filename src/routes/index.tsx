@@ -421,7 +421,7 @@ function WhoWillJoin({
           />
         </button>
         <span className="text-[17px] font-medium leading-5 tracking-[-0.43px]">
-          {withCompany ? "you bring a guest" : "Only you are on this trip"}
+          {withCompany ? "you bring a guest" : "only you"}
         </span>
       </div>
       <TextField value={yourName} onChange={setYourName} placeholder="your name" />
