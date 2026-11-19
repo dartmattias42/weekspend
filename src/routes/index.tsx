@@ -905,7 +905,7 @@ function AmountSheet({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
         aria-label="close"
-        className="mx-auto mt-[13px] block h-1 w-[139px] cursor-grab touch-none bg-ws-bg active:cursor-grabbing"
+        className="relative mx-auto mt-[13px] block h-1 w-[139px] cursor-grab touch-none bg-ws-bg active:cursor-grabbing after:absolute after:-inset-x-10 after:-top-3 after:-bottom-10 after:content-['']"
       />
       <div className="mt-3 text-center text-[17px] leading-[22px]">
         <p className="font-medium">czk</p>
