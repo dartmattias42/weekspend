@@ -993,8 +993,8 @@ function Summary({
   const guest = total - you;
   const left = budgetSek - total;
   const perDay = total / Math.max(1, days);
-  const Box = ({ label, value, tone = "" }: { label: string; value: string; tone?: string }) => (
-    <div className="flex flex-col items-center justify-center rounded-[20px] bg-ws-gray px-3 py-5 text-center">
+  const Box = ({ label, value, tone = "", bg = "bg-ws-gray" }: { label: string; value: string; tone?: string; bg?: string }) => (
+    <div className={`flex flex-col items-center justify-center rounded-[20px] px-3 py-5 text-center ${bg}`}>
       <p className="text-[15px] font-medium leading-5 text-ws-muted">{label}</p>
       <p className={`text-[28px] font-bold leading-9 tabular-nums ${tone}`}>{value}</p>
     </div>
@@ -1008,10 +1008,10 @@ function Summary({
         <div className="col-span-2">
           <Box label="sek spent in total" value={fmt(total)} tone={total > budgetSek ? "text-ws-red" : "text-ws-olive"} />
         </div>
-        <Box label="budget" value={fmt(budgetSek)} />
-        <Box label={left < 0 ? "over budget" : "left of budget"} value={fmt(Math.abs(left))} tone={left < 0 ? "text-ws-red" : ""} />
-        <Box label="per day" value={fmt(perDay)} />
-        <Box label="expenses" value={String(expenses.length)} />
+        <Box label="budget" value={fmt(budgetSek)} bg="bg-ws-orange/25" />
+        <Box label={left < 0 ? "over budget" : "left of budget"} value={fmt(Math.abs(left))} tone={left < 0 ? "text-ws-red" : ""} bg="bg-ws-olive/25" />
+        <Box label="per day" value={fmt(perDay)} bg="bg-ws-flame/25" />
+        <Box label="expenses" value={String(expenses.length)} bg="bg-ws-red/40" />
       </div>
 
       <p className="mt-8 text-[20px] font-semibold leading-[25px]">who spent what</p>
