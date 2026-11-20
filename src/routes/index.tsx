@@ -274,7 +274,7 @@ function Welcome({ onStart, dark, setDark }: { onStart: () => void; dark: boolea
         <p className="mt-7">only within europe, except bad actor countries</p>
       </div>
       <div className="my-auto flex items-center gap-3 pt-8">
-        <span className="text-[17px] font-medium tracking-[-0.43px]">{dark ? "use light mode" : "use dark mode"}</span>
+        <span className="text-[17px] font-medium tracking-[-0.43px]">{dark ? "use light mode" : "turn on dark mode"}</span>
         <button
           role="switch"
           aria-checked={dark}
